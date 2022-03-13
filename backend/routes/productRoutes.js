@@ -11,12 +11,16 @@ router.get(
   asyncHandler(async (req, res) => {
     const { offset = 1, limit = 10 } = req.query;
 
+    const totalRecords = await Product.countDocuments();
+
     const products = await Product.find({})
       .limit(limit)
       .skip((offset - 1) * limit)
       .exec();
 
-    res.json(products);
+    res.setHeader('X-Total-Count', totalRecords);
+
+    res.status(200).json(products);
   })
 );
 
