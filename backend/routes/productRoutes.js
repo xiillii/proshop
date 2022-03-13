@@ -9,7 +9,12 @@ import Product from '../models/productModel.js';
 router.get(
   '/',
   asyncHandler(async (req, res) => {
-    const products = await Product.find({});
+    const { offset = 1, limit = 10 } = req.query;
+
+    const products = await Product.find({})
+      .limit(limit)
+      .skip((offset - 1) * limit)
+      .exec();
 
     res.json(products);
   })
