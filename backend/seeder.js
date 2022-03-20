@@ -87,6 +87,42 @@ const importMillionData = async () => {
   }
 };
 
+const importMillionDataProducts = async () => {
+  try {
+    const nToGenerate = 1000000;
+
+    const adminUsers = await User.find({ isAdmin: true });
+
+    const adminUser = adminUsers[0]._id;
+
+    for (let i = 0; i < nToGenerate; i++) {
+      var rProduct = randProduct();
+
+      let product = new Product({
+        user: adminUser,
+        name: rProduct.title,
+        image: `/images/product${String(
+          Math.floor(Math.random() * 20) + 1
+        ).padStart(2, '0')}.jpg`,
+        description: rProduct.description,
+        brand: randBrand(),
+        category: rProduct.category,
+        price: rProduct.price,
+        countInStock: randNumber({ min: 0, max: 1000 }),
+        rating: rProduct.rating.rate,
+        numReviews: rProduct.rating.count,
+      });
+      await Product.create(product);
+    }
+
+    console.log('Data Imported!'.green.inverse);
+    process.exit();
+  } catch (error) {
+    console.log(`${error}`.red.inverse);
+    process.exit(1);
+  }
+};
+
 const destroyData = async () => {
   try {
     await Order.deleteMany();
@@ -105,6 +141,8 @@ if (process.argv[2] === '-d') {
   destroyData();
 } else if (process.argv[2] === '-im') {
   importMillionData();
+} else if (process.argv[2] === '-imp') {
+  importMillionDataProducts();
 } else {
   importData();
 }
