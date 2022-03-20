@@ -65,7 +65,9 @@ const importMillionData = async () => {
       let product = new Product({
         user: adminUser,
         name: rProduct.title,
-        image: `/images/${randAnimalType()}.jpeg`,
+        image: `/images/product${String(
+          Math.floor(Math.random() * 20) + 1
+        ).padStart(2, '0')}.jpg`,
         description: rProduct.description,
         brand: randBrand(),
         category: rProduct.category,
